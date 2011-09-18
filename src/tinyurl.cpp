@@ -1,10 +1,23 @@
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
+ */
 #include "fcgi_io.h"
 #include <string>
 #include <fstream>
 
-#ifndef LINKS_DIR
-#  error LINKS_DIR is undefined, use Makefile to build
+#ifndef DATA_DIR
+#  error DATA_DIR is undefined, use Makefile to build
 #endif
+
+#ifndef TOKEN_LEN
+#  error TOKEN_LEN is undefined, use Makefile to build
+#endif
+
 
 int main()
 {
@@ -21,19 +34,21 @@ int main()
       std::string path(io["PATH_INFO"]);
 
       // path will always begin with a '/' so skip it
-      // and I only want the first 4 characters
-      std::string id(path.substr(1, 4));
+      // and I only want the number of characters defined as token length
+      std::string token(path.substr(1, TOKEN_LEN));
 
-      if (id.length() != 4) {
-         // url ID was not the right length
-         io << "Status: 400 Bad Request\r\n\r\n";
+      if (token.length() != TOKEN_LEN) {
+         // url token was not the right length
+         io.status(400) << "Content-Type: text/plain\r\n\r\n";
+         io << "url tokens must be " << TOKEN_LEN << " characters long";
       } else {
-         path = LINKS_DIR + ('/' + id);
+         path = DATA_DIR + ('/' + token);
          std::ifstream f(path.c_str());
 
          if (!f) {
             // file failed to open, 'Not Found'
-            io << "Status: 404 Not Found\r\n\r\n";
+            io.status(404) << "Content-Type: text/plain\r\n\r\n";
+            io << "url token does not exist";
          } else {
             std::string url;
 
@@ -41,8 +56,7 @@ int main()
             std::getline(f, url);
 
             // send the redirect response
-            io << "Status: 301 Moved Permanently\r\n";
-            io << "Location: " << url << "\r\n\r\n";
+            io.status(301) << "Location: " << url << "\r\n\r\n";
          }
       }
 
@@ -51,4 +65,3 @@ int main()
 
    return 0;
 }
-
