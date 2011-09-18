@@ -60,17 +60,17 @@ add() {
   echo "${SCRIPT_URL}${token} => ${1}"
 }
 
-case ${1} in
+case ${1:-ls} in
   del|rm)
     [ "${2}" == "" ] && usage
     remove ${2} ;;
   add)
     [ "${2}" == "" ] && usage
     add ${2} ;;
-  help)
-    usage ;;
-  list|ls|*)
+  list|ls)
     list ;;
+  help|*)
+    usage ;;
 esac
 
 exit 0
