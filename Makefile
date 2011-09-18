@@ -1,8 +1,23 @@
-LINKS_DIR=/home/josh/.tinyurl
+# URL where tinyurl is installed, used by shell script only
+SCRIPT_URL=http://badass/~josh/
+
+# directory where URL files are stored
+DATA_DIR=/home/josh/.tinyurl
+
+# number of characters used to generate URL tokens
+TOKEN_LEN=3
 
 CXX=g++
-CXXFLAGS=-Wall -g -DLINKS_DIR=\"$(LINKS_DIR)\"
+CXXFLAGS=-Wall -DDATA_DIR=\"$(DATA_DIR)\" -DTOKEN_LEN=$(TOKEN_LEN)
 LDFLAGS=-lfcgi++
+
+all: tinyurl.fcgi tinyurl
+
+tinyurl: tinyurl.in
+	@sed 's/@DATA_DIR@/$(subst /,\/,$(DATA_DIR))/' tinyurl.in | \
+	     sed 's/@TOKEN_LEN@/$(TOKEN_LEN)/' | \
+	     sed 's/@SCRIPT_URL@/$(subst /,\/,$(SCRIPT_URL))/' > tinyurl
+	@chmod +x tinyurl
 
 tinyurl.fcgi: src/tinyurl.o src/fcgi_io.o
 	$(CXX) -o $@ $(LDFLAGS) $^
@@ -11,4 +26,4 @@ tinyurl.fcgi: src/tinyurl.o src/fcgi_io.o
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
-	@rm src/*.o tinyurl.fcgi
+	@rm src/*.o tinyurl.fcgi tinyurl

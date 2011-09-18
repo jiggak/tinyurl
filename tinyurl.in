@@ -1,0 +1,76 @@
+#!/bin/bash
+# ----------------------------------------------------------------------------
+# "THE BEER-WARE LICENSE" (Revision 42):
+# <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+# can do whatever you want with this stuff. If we meet some day, and you think
+# this stuff is worth it, you can buy me a beer in return Josh Kropf
+# ----------------------------------------------------------------------------
+
+SCRIPT_URL=@SCRIPT_URL@
+DATA_DIR=@DATA_DIR@
+TOKEN_LEN=@TOKEN_LEN@
+
+MAX_TOKEN=
+for ((i=0; i<${TOKEN_LEN}; ++i)); do
+  MAX_TOKEN=${MAX_TOKEN}f
+done
+
+usage() {
+  echo -n "\
+usage: tinyurl
+   help           This help message
+   del|rm [token] Remove url with token
+   add [url]      Add new url and print shortened version
+   list           List all short and long url's (default command)
+"
+  exit 1
+}
+
+random_token() {
+  # random integer value between 0 and MAX_TOKEN
+  val=$((${RANDOM} % 0x${MAX_TOKEN}))
+
+  # convert back to hex
+  val=$(printf '%x' ${val})
+
+  # pad with zeros if too short
+  while [ ${#val} -lt ${TOKEN_LEN} ]; do
+    val=0${val}
+  done
+
+  echo $val
+}
+
+list() {
+  for f in $(ls ${DATA_DIR}); do
+    echo "${SCRIPT_URL}${f} => $(cat ${DATA_DIR}/${f})"
+  done
+}
+
+remove() {
+  if ! rm ${DATA_DIR}/${1} 2>/dev/null; then
+    echo "token '${1}' not found" >&2
+    exit 1
+  fi
+}
+
+add() {
+  token=$(random_token)
+  echo -n "${1}" >${DATA_DIR}/${token}
+  echo "${SCRIPT_URL}${token} => ${1}"
+}
+
+case ${1} in
+  del|rm)
+    [ "${2}" == "" ] && usage
+    remove ${2} ;;
+  add)
+    [ "${2}" == "" ] && usage
+    add ${2} ;;
+  help)
+    usage ;;
+  list|ls|*)
+    list ;;
+esac
+
+exit 0
