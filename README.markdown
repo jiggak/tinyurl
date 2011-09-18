@@ -34,12 +34,16 @@ Buildtime settings
 Apache settings
 ===============
 
-- install [mod_fcgid](http://httpd.apache.org/mod_fcgid/)
-- (optional) add the following to `.htaccess`
+Install and enable [mod_fcgid](http://httpd.apache.org/mod_fcgid/).
 
-	Options +ExecCGI
-	AddHandler fcgid-script .fcgi
-	
-	RewriteEngine On
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteRule ^(.*)$ /tinyurl.fcgi/$1 [L]
+Optionally use the following `.htaccess` to rewrite all requests in a given
+directory/location to the tinyurl.fcgi script. If tinyurl.fcgi is in a location
+other than the root of the domain adjust the path in `ReweriteRule`
+appropriately.
+
+    Options +ExecCGI
+    AddHandler fcgid-script .fcgi
+    
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ /tinyurl.fcgi/$1 [L]
