@@ -1,8 +1,8 @@
 # URL where tinyurl is installed, used by shell script only
-SCRIPT_URL=http://badass/~josh/
+SCRIPT_URL=http://0x2a.ca/
 
 # directory where URL files are stored
-DATA_DIR=/home/josh/.tinyurl
+DATA_DIR=/home/web/0x2a.ca/links
 
 # number of characters used to generate URL tokens
 TOKEN_LEN=3
