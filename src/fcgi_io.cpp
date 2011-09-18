@@ -22,3 +22,23 @@ const char * fcgi_io::operator[] (const char *name)
 {
    return FCGX_GetParam(name, _request.envp);
 }
+
+fcgi_io & fcgi_io::status(int code)
+{
+   switch (code) {
+   case 200:
+      *this << "Status: 404 Not Found\r\n";
+      break;
+   case 301:
+      *this << "Status: 301 Moved Permanently\r\n";
+      break;
+   case 400:
+      *this << "Status: 400 Bad Request\r\n";
+      break;
+   case 404:
+      *this << "Status: 404 Not Found\r\n";
+      break;
+   }
+
+   return *this;
+}
