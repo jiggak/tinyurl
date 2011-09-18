@@ -26,6 +26,7 @@ Buildtime settings
 ==================
 
 `Makefile` has a few settings that should be tweaked to suit your server:
+
 - **SCRIPT_URL**: full url to `tinyurl.fcgi` (including trailing forward slash)
 - **DATA_DIR**: directory where shortened url's are stored
 - **TOKEN_LEN**: length of auto-generated url ID's
