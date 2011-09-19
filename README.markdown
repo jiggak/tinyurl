@@ -7,7 +7,7 @@ url shortener. There is nothing fancy going on here: long url's are stored
 in files, minimal error handling (404 Not Found and 400 Bad Request), no hit
 tracking.
 
-I choose to write a raw CGI program instead of using a higher level scripting
+I chose to write a raw CGI program instead of using a higher level scripting
 language due to simplicity of the app. This also means that requirements are
 simple; just a competent HTTP server capable of running FastCGI programs.
 
