@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------------
+# "THE BEER-WARE LICENSE" (Revision 42):
+# <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+# can do whatever you want with this stuff. If we meet some day, and you think
+# this stuff is worth it, you can buy me a beer in return Josh Kropf
+# ----------------------------------------------------------------------------
+
+DATA_DIR=@DATA_DIR@
+
+_tinyurl() {
+  local cur prev cmds
+
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+  cmds="help del rm add list ls"
+
+  if [ ${#COMP_WORDS[@]} -gt 3 ]; then
+    return 1
+  fi
+
+  case "${prev}" in
+  help|list)
+    ;;
+  del|rm)
+    links=$(ls ${DATA_DIR})
+    COMPREPLY=($(compgen -W "${links}" -- ${cur}))
+    ;;
+  add)
+    if [[ ${cur} != "http://*" ]]; then
+      COMPREPLY=("http://")
+    fi
+    ;;
+  *)
+    COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+    # append space to each command
+    COMPREPLY=("${COMPREPLY[@]/%/ }")
+    ;;
+  esac
+
+  return 0
+}
+
+complete -o nospace -F _tinyurl tinyurl

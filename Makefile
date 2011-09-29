@@ -13,11 +13,14 @@ LDFLAGS=-lfcgi++
 
 all: tinyurl.fcgi tinyurl
 
-tinyurl: tinyurl.in
+tinyurl: tinyurl.in tinyurl.bash.in
 	@sed 's/@DATA_DIR@/$(subst /,\/,$(DATA_DIR))/' tinyurl.in | \
 	     sed 's/@TOKEN_LEN@/$(TOKEN_LEN)/' | \
 	     sed 's/@SCRIPT_URL@/$(subst /,\/,$(SCRIPT_URL))/' > tinyurl
 	@chmod +x tinyurl
+	
+	@sed 's/@DATA_DIR@/$(subst /,\/,$(DATA_DIR))/' tinyurl.bash.in \
+	     > tinyurl.bash
 
 tinyurl.fcgi: src/tinyurl.o src/fcgi_io.o
 	$(CXX) -o $@ $(LDFLAGS) $^
