@@ -21,7 +21,7 @@ usage: tinyurl
    help           This help message
    del|rm [token] Remove url with token
    add [url]      Add new url and print shortened version
-   list           List all short and long url's (default command)
+   list|ls        List all short and long url's (default command)
 "
   exit 1
 }
